@@ -1,0 +1,13 @@
+.user {
+	border-radius: 4px;
+}
+
+.userDiv {
+	width: 100%;
+	padding-top: 12px;
+	border-top: 1px solid rgb(55, 58, 64);
+}
+
+.user:hover {
+	background-color: rgb(37, 38, 43);
+}
