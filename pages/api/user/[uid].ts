@@ -1,6 +1,6 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { checkForRole } from '../../lib/authcheck';
+import { checkForRole } from '../../../lib/authcheck';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	let tokenCheck = await checkForRole(req, res, [1]);

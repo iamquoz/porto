@@ -23,5 +23,13 @@ export default NextAuth({
 			clientSecret: process.env.GITHUB_CLIENT_SECRET
 		})
 	],
-	secret: process.env.secret
+	secret: process.env.secret,
+	callbacks: {
+		async session({ session, token, user }) {
+
+			session.role = user.roleRoleId;
+
+			return session;
+		}
+	}
 })

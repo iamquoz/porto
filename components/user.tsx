@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react"
 import Link from "next/link";
-import { ActionIcon, Anchor, Avatar, Group, Skeleton, Text, UnstyledButton } from '@mantine/core'
+import { ActionIcon, Avatar, Button, Group, Skeleton, Text, UnstyledButton } from '@mantine/core'
 import { ExitIcon } from "@radix-ui/react-icons";
 import { EnterIcon } from "@radix-ui/react-icons";
 
@@ -9,12 +9,12 @@ import styles from '../styles/UserNavbar.module.css'
 export default function User() {
 
   	const { data: session, status } = useSession()
-
+	console.log(session);
 	switch (status) {
 		case 'authenticated':
 			return (
-				<UnstyledButton className = {styles.userDiv}>
-					<Group position="apart" className = {styles.user}>
+				<Button component = 'div' variant = "subtle" fullWidth style = {{height: "50px"}}>
+					<Group position="apart">
 							<Group>
 								<Avatar radius = "xl" src = {session?.user?.image ?? ""}></Avatar>	
 								<div>
@@ -26,12 +26,12 @@ export default function User() {
 							<ExitIcon />
 						</ActionIcon>
 					</Group>
-				</UnstyledButton>
+				</Button>
 			)
 		case 'loading': 
 			return (
-				<UnstyledButton className = {styles.userDiv}>
-					<Group position="apart" className = {styles.user}>
+				<Button component = 'div' variant = "subtle" fullWidth style = {{height: "50px"}}>
+					<Group position="apart">
 							<Group>
 								<Skeleton height = {50} circle></Skeleton>	
 								<div>
@@ -43,12 +43,12 @@ export default function User() {
 							<ExitIcon />
 						</Skeleton>
 					</Group>
-				</UnstyledButton>
+				</Button>
 			)
 		case 'unauthenticated':
 			return (
-				<UnstyledButton className = {styles.userDiv} >
-					<Group position="apart" className = {styles.user}>
+				<Button component = 'div' variant = "subtle" fullWidth style = {{height: "50px"}}>
+					<Group position="apart">
 							<Group>
 								<Avatar radius = "xl"></Avatar>	
 								<Text>Log in!</Text>
@@ -57,7 +57,7 @@ export default function User() {
 							<EnterIcon />
 						</ActionIcon>
 					</Group>
-				</UnstyledButton>	
+				</Button>	
 			)
 	}
 

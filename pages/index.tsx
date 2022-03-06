@@ -1,12 +1,7 @@
-import { AppShell, Navbar, Header, Text } from '@mantine/core';
-import CustomHeader from '../components/header';
-import CustomNavbar from "../components/navbar";
+import { Text } from '@mantine/core';
+
 export default function HomePage() {
 	return (
-		<AppShell padding = "md" 
-		navbar = {<CustomNavbar />}
-		header = {<CustomHeader />}>
-			<Text>text</Text>
-		</AppShell>
+		<Text>text</Text>
   	);
 }
