@@ -7,4 +7,14 @@ enum Role {
 	customer
 }
 
+const RolesStrings: string[] = [
+	"Администратор",
+	"Менеджер",
+	"Продавец",
+	"Агент поддержки",
+	"Автор",
+	"Клиент"
+]
+
 export default Role;
+export { RolesStrings }

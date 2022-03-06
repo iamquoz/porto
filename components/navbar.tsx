@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react"
 import Image from "next/image";
-import { Navbar, ScrollArea, useMantineColorScheme, ActionIcon, Switch, Group, Divider, Text, Space, UnstyledButton, ThemeIcon } from '@mantine/core';
+import Link from "next/link";
+import { Navbar, ScrollArea, useMantineColorScheme, ActionIcon, Group, Divider, Text, Space, UnstyledButton, ThemeIcon } from '@mantine/core';
 import { MantineColor } from "@mantine/styles";
 import clsx from "clsx";
 import User from "./user";
@@ -8,8 +10,8 @@ import axios from "axios";
 import styles from '../styles/Navbar.module.css'
 
 import Logo from './img/logo.svg'
-import Link from "next/link";
 import { DashboardIcon, HeartFilledIcon, MixIcon, MoonIcon, PersonIcon, ReaderIcon, SunIcon } from "@radix-ui/react-icons";
+import Role from "../lib/roles";
 
 export default function CustomNavbar() {
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -26,6 +28,8 @@ export default function CustomNavbar() {
 		[logoInvert]: colorScheme === 'dark'
 	})
 
+	const { data: session, status } = useSession();
+
 	return (
 		<Navbar width={{base: 300}} padding = "xs">
 			<Navbar.Section mt = "xs">
@@ -39,12 +43,13 @@ export default function CustomNavbar() {
 						{colorScheme === 'dark' ? <SunIcon /> : <MoonIcon />}
 					</ActionIcon>
 				</Group>
+				<HSpaceDivider />
 			</Navbar.Section>
 			<Navbar.Section grow component={ScrollArea}>
-				<HSpaceDivider />
 
-				<Group direction = "column">
-					<SidebarButton flavorText = "Аккаунты" link = "/users" color = "blue" icon = {<PersonIcon />}/>
+				<Group direction = "column" spacing = "xl">
+					{[Role.admin, Role.manager].includes(session?.role as Role) 
+						&& <SidebarButton flavorText = "Аккаунты" link = "/users" color = "blue" icon = {<PersonIcon />}/>}
 					<SidebarButton flavorText = "Новости" link = "/news" color = "cyan" icon = {<ReaderIcon />} />
 					<SidebarButton flavorText = "Поддержка" link = "/support" color = "pink" icon = {<HeartFilledIcon />} />
 					<SidebarButton flavorText = "Заказы" link = "/orders" color = "teal" icon = {<DashboardIcon />} />

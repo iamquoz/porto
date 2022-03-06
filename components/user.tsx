@@ -4,8 +4,6 @@ import { ActionIcon, Avatar, Button, Group, Skeleton, Text, UnstyledButton } fro
 import { ExitIcon } from "@radix-ui/react-icons";
 import { EnterIcon } from "@radix-ui/react-icons";
 
-import styles from '../styles/UserNavbar.module.css'
-
 export default function User() {
 
   	const { data: session, status } = useSession()
@@ -13,20 +11,22 @@ export default function User() {
 	switch (status) {
 		case 'authenticated':
 			return (
-				<Button component = 'div' variant = "subtle" fullWidth style = {{height: "50px"}}>
-					<Group position="apart">
-							<Group>
-								<Avatar radius = "xl" src = {session?.user?.image ?? ""}></Avatar>	
-								<div>
-									<Text>{session?.user?.name}</Text>
-									<Text size="xs" color="gray">{session?.user?.email}</Text>
-								</div>
-							</Group>
-						<ActionIcon component = {Link} href = "/api/auth/signout">
-							<ExitIcon />
-						</ActionIcon>
-					</Group>
-				</Button>
+				<Link href = "/self" passHref>
+					<Button component = 'div' variant = "subtle" fullWidth style = {{height: "50px"}}>
+						<Group position="apart">
+								<Group>
+									<Avatar radius = "xl" src = {session?.user?.image ?? ""}></Avatar>	
+									<div>
+										<Text>{session?.user?.name}</Text>
+										<Text size="xs" color="gray">{session?.user?.email}</Text>
+									</div>
+								</Group>
+							<ActionIcon component = {Link} href = "/api/auth/signout">
+								<ExitIcon />
+							</ActionIcon>
+						</Group>
+					</Button>
+				</Link>
 			)
 		case 'loading': 
 			return (

@@ -4,13 +4,11 @@ import GitHubProvider from "next-auth/providers/github";
 import YandexProvider from "next-auth/providers/yandex"
 
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import bcrypt from 'bcrypt'
 
 import prisma from '../../../lib/prisma'
 
 import NextAuth from "next-auth";
 
-const rounds = 5;
 
 export default NextAuth({
 	debug: true,
@@ -36,6 +34,9 @@ export default NextAuth({
 			session.role = user.roleRoleId;
 
 			return session;
+		},
+		async signIn({ user, account, profile, email, credentials }) {
+			return user.active;
 		}
 	}
 })
