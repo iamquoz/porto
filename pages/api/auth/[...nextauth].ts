@@ -1,7 +1,7 @@
-import CredentialsProvider from "next-auth/providers/credentials";
 import VkProvider from "next-auth/providers/vk";
 import GitHubProvider from "next-auth/providers/github";
 import YandexProvider from "next-auth/providers/yandex"
+import GoogleProvider from "next-auth/providers/google"
 
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 
@@ -25,6 +25,10 @@ export default NextAuth({
 		YandexProvider({
 			clientId: process.env.YANDEX_CLIENT_ID,
 			clientSecret: process.env.YANDEX_CLIENT_SECRET
+		}),
+		GoogleProvider({
+			clientId: process.env.GOOGLE_CLIENT_ID as string,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
 		})
 	],
 	secret: process.env.secret,
@@ -36,7 +40,8 @@ export default NextAuth({
 			return session;
 		},
 		async signIn({ user, account, profile, email, credentials }) {
-			return user.active;
+			// means that either it's user's first log in or user has not been disabled
+			return user.active === undefined || user.active === true;
 		}
 	}
 })

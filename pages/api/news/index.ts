@@ -1,14 +1,16 @@
+
 import type { NextApiRequest, NextApiResponse } from 'next'
+import prisma from '../../../lib/prisma';
 import { extractUser } from '../../../lib/role';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	let tokenCheck = await extractUser(req, res);
+	let user = await extractUser(req, res);
 
-	console.log(tokenCheck);
-	let users = await prisma?.user.findMany({
+	console.log(user);
+	let blogposts = await prisma.blogPost.findMany({
 		include: {
-			accounts: true
+			author: true
 		}
 	})
-	res.json(users);
+	res.json(blogposts);
 }

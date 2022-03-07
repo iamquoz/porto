@@ -15,12 +15,6 @@ import Role from "../lib/roles";
 
 export default function CustomNavbar() {
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-
-	useEffect(() => {
-		axios.get('/api/user')
-			.then(res => console.log(res))
-			.catch(err => console.log(err));
-	}, [])
 	
 	const {logo, logoInvert} = styles;
 	const style = clsx({

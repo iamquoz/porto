@@ -7,7 +7,7 @@ import { EnterIcon } from "@radix-ui/react-icons";
 export default function User() {
 
   	const { data: session, status } = useSession()
-	console.log(session);
+
 	switch (status) {
 		case 'authenticated':
 			return (

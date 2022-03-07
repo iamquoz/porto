@@ -1,6 +1,6 @@
 import { Prisma, User } from '.prisma/client';
 import { Space, Table, Title, Avatar, Menu, ActionIcon, Skeleton } from '@mantine/core'
-import { useListState } from '@mantine/hooks';
+import { useId, useListState } from '@mantine/hooks';
 import axios from 'axios';
 import { useEffect, useState } from 'react'
 import Roles, { RolesStrings } from "../../lib/roles"
@@ -53,6 +53,11 @@ export default function Users() {
 							<td>{RolesStrings[e.roleRoleId - 1]}</td>
 							<td>
 								<Menu>
+									<Menu.Item disabled = {e.roleRoleId === Roles.admin}>
+										<Menu trigger = "hover" position = 'left' control = {<span>Роли</span>} withinPortal = {false} delay = {500}>
+											{RolesStrings.map((role, index) => <Menu.Item key = {index}>{role}</Menu.Item>)}
+										</Menu>
+									</Menu.Item>
 									<Menu.Item color="red" icon={<TrashIcon />} disabled = {e.roleRoleId === Roles.admin}>Деактивировать аккаунт</Menu.Item>
 								</Menu>
 							</td>

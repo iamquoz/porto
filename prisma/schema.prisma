@@ -64,7 +64,7 @@ model User {
   sessions      Session[]
   role          Role       @relation(fields: [roleRoleId], references: [roleId])
   roleRoleId    Int        @default(6)
-  active		Boolean	   @default(true)
+  active        Boolean    @default(true)
   BlogPost      BlogPost[]
 }
 

@@ -1,7 +1,8 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { checkForRole } from '../../../lib/authcheck';
+import { extractUser } from '../../../lib/role';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	console.log(req.method);
+	res.end();
 }
