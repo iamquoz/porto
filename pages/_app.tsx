@@ -5,6 +5,7 @@ import { MantineProvider, ColorSchemeProvider, ColorScheme, AppShell } from '@ma
 import { useColorScheme, useHotkeys } from '@mantine/hooks'
 import { SessionProvider } from "next-auth/react";
 import CustomNavbar from "../components/navbar"
+import { NotificationsProvider } from '@mantine/notifications';
 
 export default function App(props: AppProps) {
 	const { Component, pageProps } = props;
@@ -25,9 +26,11 @@ export default function App(props: AppProps) {
 			<SessionProvider session = {pageProps.session} >
 				<ColorSchemeProvider colorScheme = {colorScheme} toggleColorScheme = {toggleColorScheme}>
 					<MantineProvider withGlobalStyles withNormalizeCSS theme={{colorScheme}}>
-						<AppShell padding = "md" navbar = {<CustomNavbar />}>
-							<Component {...pageProps} />
-						</AppShell>
+						<NotificationsProvider>
+							<AppShell padding = "md" navbar = {<CustomNavbar />}>
+								<Component {...pageProps} />
+							</AppShell>
+						</NotificationsProvider>
 					</MantineProvider>
 				</ColorSchemeProvider>
 			</SessionProvider>

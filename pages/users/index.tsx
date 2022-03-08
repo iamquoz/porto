@@ -4,7 +4,7 @@ import { useId, useListState } from '@mantine/hooks';
 import axios from 'axios';
 import { useEffect, useState } from 'react'
 import Roles, { RolesStrings } from "../../lib/roles"
-import { TrashIcon, EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons"
+import { TrashIcon, EyeOpenIcon, EyeClosedIcon, Pencil1Icon } from "@radix-ui/react-icons"
 
 type UserWithProvider = Prisma.UserGetPayload<{include: {accounts: true}}>
 
@@ -53,11 +53,7 @@ export default function Users() {
 							<td>{RolesStrings[e.roleRoleId - 1]}</td>
 							<td>
 								<Menu>
-									<Menu.Item disabled = {e.roleRoleId === Roles.admin}>
-										<Menu trigger = "hover" position = 'left' control = {<span>Роли</span>} withinPortal = {false} delay = {500}>
-											{RolesStrings.map((role, index) => <Menu.Item key = {index}>{role}</Menu.Item>)}
-										</Menu>
-									</Menu.Item>
+									<Menu.Item icon = {<Pencil1Icon />}>Редактировать</Menu.Item>
 									<Menu.Item color="red" icon={<TrashIcon />} disabled = {e.roleRoleId === Roles.admin}>Деактивировать аккаунт</Menu.Item>
 								</Menu>
 							</td>

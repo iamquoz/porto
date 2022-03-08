@@ -22,6 +22,7 @@ model BlogPost {
   body     String   @db.Text
   title    String   @db.Text
   userId   String
+  active   Boolean  @default(true)
 }
 
 model Account {
