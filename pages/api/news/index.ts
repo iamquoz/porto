@@ -11,8 +11,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		where: {
 			active: true
 		},
-		include: {
-			author: true
+		select: {
+			author: true,
+			title: true,
+			postTime: true,
+			postId: true
 		}
 	})
 	res.json(blogposts);

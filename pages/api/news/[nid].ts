@@ -6,6 +6,14 @@ import prisma from '../../../lib/prisma';
 import { extractUser } from '../../../lib/user';
 import Role from '../../../lib/roles';
 
+export const config = {
+	api: {
+		bodyParser: {
+			sizeLimit: '5mb'
+		}
+	}
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	let { nid } = req.query;
 
@@ -68,7 +76,6 @@ async function upsBlogPost(nid: number, article: BlogPost) {
 	delete article.author;
 	// @ts-ignore
 	delete article.postId;
-	console.log(article.body, nid);
 	let upserted = await prisma.blogPost.upsert({
 		where: {
 			postId: nid === 0 ? -1 : nid

@@ -55,17 +55,20 @@ export default function NewsIndiv() {
 		<div>
 			<Group position = "apart">
 				<Title>Редактирование статьи {article.title}</Title>
-				<Button variant="gradient" gradient={{ from: 'indigo', to: 'cyan', deg: 205 }} onClick = {() => save()} size = "lg">Сохранить</Button>
+				<Button disabled = {article.title.length === 0 || article.body.length <= '<p><br></p>'.length}
+				 variant="gradient" gradient={{ from: 'indigo', to: 'cyan', deg: 205 }} 
+				 onClick = {() => save()} size = "lg">Сохранить</Button>
 			</Group>
 			<Space h = "xl" />
 			<Group grow direction = "column">
-				<Group position = "apart" grow>
+				<Group position = "apart" grow style={{alignItems: 'flex-start'}}>
 					<TextInput 
 						value = {article.title}
 						onChange = {e => setArticle({title: e.target.value})}
 						label = "Заголовок"
-						placeholder = "Заголовок"
 						size = "lg"
+						required
+						error = {article.title.length === 0 ? "Заголовок не может быть пустым" : false}
 					/>
 					<DatePicker 
 						label = "Дата публикации"

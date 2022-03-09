@@ -5,11 +5,12 @@ import axios from 'axios';
 import { useEffect, useState } from 'react'
 import Roles, { RolesStrings } from "../../lib/roles"
 import { TrashIcon, EyeOpenIcon, EyeClosedIcon, Pencil1Icon } from "@radix-ui/react-icons"
+import { Router, useRouter } from 'next/router';
 
 type UserWithProvider = Prisma.UserGetPayload<{include: {accounts: true}}>
 
 export default function Users() {
-
+	const router = useRouter();
 	const [viewEmail, setviewEmail] = useState(false);
 	const [users, userHandler] = useListState<UserWithProvider>();
 
@@ -52,8 +53,8 @@ export default function Users() {
 							<td>{e.accounts.map(acc => acc.provider).join(', ')}</td>
 							<td>{RolesStrings[e.roleRoleId - 1]}</td>
 							<td>
-								<Menu>
-									<Menu.Item icon = {<Pencil1Icon />}>Редактировать</Menu.Item>
+								<Menu trigger='hover'>
+									<Menu.Item icon = {<Pencil1Icon />} onClick = {() => router.push(`/users/${e.id}`)}>Редактировать</Menu.Item>
 									<Menu.Item color="red" icon={<TrashIcon />} disabled = {e.roleRoleId === Roles.admin}>Деактивировать аккаунт</Menu.Item>
 								</Menu>
 							</td>
