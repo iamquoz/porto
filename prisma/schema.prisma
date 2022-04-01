@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Role {
@@ -56,17 +57,21 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  role          Role       @relation(fields: [roleRoleId], references: [roleId])
-  roleRoleId    Int        @default(6)
-  active        Boolean    @default(true)
-  BlogPost      BlogPost[]
+  id                String              @id @default(cuid())
+  name              String?
+  email             String?             @unique
+  emailVerified     DateTime?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
+  role              Role                @relation(fields: [roleRoleId], references: [roleId])
+  roleRoleId        Int                 @default(6)
+  active            Boolean             @default(true)
+  BlogPost          BlogPost[]
+  Order             Order[]
+  Agent             SupportTicket[]     @relation("agent")
+  Customer          SupportTicket[]     @relation("customer")
+  SupportTicketText SupportTicketText[]
 }
 
 model VerificationToken {
@@ -75,4 +80,63 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model AdType {
+  AdTypeId Int    @id @default(autoincrement())
+  name     String
+  Sku      Sku[]
+}
+
+model Sku {
+  SkuId          Int    @id @default(autoincrement())
+  name           String
+  price          Float
+  type           AdType @relation(fields: [adTypeAdTypeId], references: [AdTypeId])
+  adTypeAdTypeId Int
+  longitude      Float?
+  latitude       Float?
+}
+
+model Order {
+  OrderId       Int             @id @default(autoincrement())
+  user          User            @relation(fields: [userId], references: [id])
+  totalPrice    Int
+  SkuIds        Int[] // sku ids, but can't have an array with relations
+  count         Int[] // count for each of skus
+  active        Boolean[] // whether each sku in the order is currently active (hasn't been stopped)
+  startDate     DateTime[] // start date for each sku
+  userId        String
+  SupportTicket SupportTicket[]
+}
+
+model TicketStatus {
+  StatusId      Int             @id @default(autoincrement())
+  name          String
+  SupportTicket SupportTicket[]
+}
+
+model SupportTicket {
+  TicketId             Int                 @id @default(autoincrement())
+  agent                User                @relation(fields: [agentId], references: [id], name: "agent", map: "agent_ticket_fkey")
+  customer             User                @relation(fields: [customerId], references: [id], name: "customer", map: "customer_ticket_fkey")
+  dateStarted          DateTime
+  status               TicketStatus        @relation(fields: [ticketStatusStatusId], references: [StatusId])
+  dateResolved         DateTime?
+  order                Order               @relation(fields: [orderOrderId], references: [OrderId])
+  agentId              String
+  customerId           String
+  ticketStatusStatusId Int
+  orderOrderId         Int
+  SupportTicketText    SupportTicketText[]
+}
+
+model SupportTicketText {
+  id                    Int           @id @default(autoincrement())
+  author                User          @relation(fields: [userId], references: [id])
+  text                  String
+  date                  DateTime      @default(now())
+  ticket                SupportTicket @relation(fields: [supportTicketTicketId], references: [TicketId])
+  userId                String
+  supportTicketTicketId Int
 }
