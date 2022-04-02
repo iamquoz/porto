@@ -1,5 +1,5 @@
 import { Prisma, User } from '.prisma/client';
-import { Space, Table, Title, Avatar, Menu, ActionIcon, Skeleton } from '@mantine/core'
+import { Space, Table, Title, Avatar, Menu, ActionIcon, Skeleton, Badge, Select } from '@mantine/core'
 import { useId, useListState } from '@mantine/hooks';
 import axios from 'axios';
 import { useEffect, useState } from 'react'
@@ -22,6 +22,10 @@ export default function Users() {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const onChangeRole = (uid: string, role: string) => {
+		console.log(uid, role, RolesStrings.findIndex(e => e == role) + 1);
+	}
+
 	return (
 		<div>
 			<Title>Все пользователи рекламного агентства</Title>
@@ -41,6 +45,7 @@ export default function Users() {
 						</th>
 						<th>Провайдер</th>
 						<th>Роль</th>
+						<th>Статус</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -51,7 +56,17 @@ export default function Users() {
 							<td>{e.name}</td>
 							<td><Skeleton visible = {!viewEmail} animate = {false}>{e.email}</Skeleton></td>
 							<td>{e.accounts.map(acc => acc.provider).join(', ')}</td>
-							<td>{RolesStrings[e.roleRoleId - 1]}</td>
+							<td>
+								<Select variant='unstyled'
+								 data = {RolesStrings}
+								 maxDropdownHeight = {300}
+								 disabled = {e.roleRoleId === Roles.admin}
+								 defaultValue = {RolesStrings[e.roleRoleId - 1]} 
+								 onChange = {(role) => onChangeRole(e.id, role!)}/>
+							</td>
+							<td>{e.active 
+								? <Badge variant='dot' color = "green">Активен</Badge> 
+								: <Badge variant='dot' color = "red">Деактивирован</Badge>}</td>
 							<td>
 								<Menu trigger='hover'>
 									<Menu.Item icon = {<Pencil1Icon />} onClick = {() => router.push(`/users/${e.id}`)}>Редактировать</Menu.Item>

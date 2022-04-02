@@ -1,24 +1,39 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma';
-
+import { User } from '@prisma/client';
+import Method from '../../../lib/httpmethods';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	let { uid } = req.query;
 
+	let userId: string;
+
 	if (Array.isArray(uid))
-		uid = uid[0];
+		userId = uid[0];
+	else 
+		userId = uid;
 
 	if (req.method?.toLocaleLowerCase() === 'get') {
 		const user = await prisma.user.findUnique({
 			where: {
-				id: uid.length === 0 ? '' : uid  
+				id: userId.length === 0 ? '' : userId  
 			}
 		})
 		res.json(user);
 	}
 	else {
-		
+		if (req.method == Method.DELETE) {
+			let updated = await prisma.user.update({
+				where: {
+					id: userId
+				},
+				data: {
+					active: false
+				}
+			})
+		}
+
 	}
 
 }
