@@ -1,7 +1,6 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma';
-import { User } from '@prisma/client';
 import Method from '../../../lib/httpmethods';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -18,6 +17,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		const user = await prisma.user.findUnique({
 			where: {
 				id: userId.length === 0 ? '' : userId  
+			},
+			include: {
+				Order: true,
+				Agent: true,
+				Customer: true
 			}
 		})
 		res.json(user);
@@ -33,7 +37,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				}
 			})
 		}
-
+		else if (req.method == Method.PATCH) {
+			let updated = await prisma.user.update({
+				where: {
+					id: userId
+				},
+				data: {
+					roleRoleId: req.body.role
+				}
+			})
+		}
+		else if (req.method == Method.PUT) {
+			let updated = await prisma.user.update({
+				where: {
+					id: userId
+				},
+				data: {
+					active: true
+				}
+			})
+		}
 	}
 
 }

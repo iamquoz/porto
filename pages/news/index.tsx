@@ -20,7 +20,7 @@ export default function News() {
 		axios.get('/api/news')
 			.then(res => newsHandler.setState(res.data))
 			.catch(err => console.log(err));
-	// infinite loop, asks for userHandler
+	// infinite loop, asks for newsHandler
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
