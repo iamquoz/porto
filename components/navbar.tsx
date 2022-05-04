@@ -25,7 +25,7 @@ export default function CustomNavbar() {
 	const { data: session, status } = useSession();
 
 	return (
-		<Navbar width={{base: 300}} padding = "xs" style = {{position: "sticky"}}>
+		<Navbar width={{base: 300}} p = "xs" style = {{position: "sticky"}}>
 			<Navbar.Section mt = "xs">
 				<Group position = "apart">
 					<Link href = "/" passHref>
