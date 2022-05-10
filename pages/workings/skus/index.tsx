@@ -1,9 +1,11 @@
-import { Table, Group, Title, Button, Space, Badge } from '@mantine/core'
+import { Table, Group, Title, Button, Space, Badge, Menu } from '@mantine/core'
 import { useListState } from '@mantine/hooks'
 import { useRouter } from 'next/router'
 import { Prisma } from ".prisma/client"
 import { useEffect } from 'react'
 import axios from 'axios'
+import { AdTypesStrings } from '../../../lib/adtypes'
+import { Pencil1Icon } from '@radix-ui/react-icons'
 
 type SkuWithType = Prisma.SkuGetPayload<{include: {type: true}}>
 
@@ -40,9 +42,11 @@ export default function Skus() {
 					{skus.map(e => 
 						<tr key = {e.SkuId}>
 							<td>{e.name}</td>
-							<td>{e.price}</td>
-							<td><Badge variant='dot'>{e.type.name}</Badge></td>
-							<td>{e.name}</td>
+							<td>₽ {e.price}</td>
+							<td><Badge variant='dot'>{AdTypesStrings[e.adTypeAdTypeId - 1]}</Badge></td>
+							<Menu trigger='hover'>
+									<Menu.Item icon = {<Pencil1Icon />} onClick = {() => router.push(`/workings/skus/${e.SkuId}`)}>Редактировать</Menu.Item>
+							</Menu>
 						</tr>
 					)}
 				</tbody>

@@ -1,7 +1,8 @@
 import { Sku } from '.prisma/client';
-import { Group, Space, TextInput, Title, Box, Button, NativeSelect, NumberInput } from '@mantine/core';
+import { Group, Space, TextInput, Title, Box, Button, NativeSelect, NumberInput, InputWrapper } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useRouter } from 'next/router'
+import MapDynamic from '../../../components/MapDynamic';
 import { useSetState } from '@mantine/hooks';
 import { useNotifications } from '@mantine/notifications';
 import { useEffect, useState } from 'react'
@@ -13,11 +14,11 @@ export default function SkusIndiv() {
 	const notifications = useNotifications();
 
 	const { sid } = router.query;
-	const [sku, setsku] = useSetState<Partial<Sku>>({name: '', adTypeAdTypeId: 0, price: 0, latitude: 0, longitude: 0});
+	const [sku, setsku] = useSetState<Partial<Sku>>({name: '', adTypeAdTypeId: 0, price: 0, latitude: null, longitude: null});
 
 	useEffect(() => {
 		if (sid !== '0')
-			axios.get(`/api/news/${sid}`)
+			axios.get(`/api/skus/${sid}`)
 				.then(res => setsku(res.data))
 				.catch(err => console.log(err));
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -28,7 +29,31 @@ export default function SkusIndiv() {
 	}
 
 	function save() {
-
+		const id = notifications.showNotification({
+			title: "Подождите",
+			message: "Идет загрузка",
+			loading: true,
+			autoClose: false,
+			disallowClose: true
+		})
+		console.log(sku);
+		axios.post(`/api/skus/${sid}`, sku)
+			.then(res => {
+				notifications.updateNotification(id, {
+					autoClose: 3000,
+					color: 'green',
+					title: "Успешно!",
+					message: "Товар был успешно сохранен"
+				})
+			})
+			.catch(err => {
+				notifications.updateNotification(id, {
+					autoClose: 3000,
+					color: 'red',
+					title: "Ошибка!",
+					message: "При сохранении произошла ошибка, попробуйте снова"
+				})
+			});
 	}
 
 	return (
@@ -75,9 +100,9 @@ export default function SkusIndiv() {
 				/>
 
 				{[AdTypes.Billboard, AdTypes.Mall].includes(sku.adTypeAdTypeId ?? 0) &&
-				<div>
-					map
-				</div>
+				<InputWrapper label = 'Физическое местонахождение' size='lg' required>
+					<MapDynamic lat={sku.latitude ?? 46.34930769543271} lng = {sku.longitude ?? 48.03102157887105} onChange = {setsku}/>
+				</InputWrapper>
 				}
 			</Group>
 		</div>
