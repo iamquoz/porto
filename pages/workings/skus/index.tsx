@@ -44,9 +44,11 @@ export default function Skus() {
 							<td>{e.name}</td>
 							<td>₽ {e.price}</td>
 							<td><Badge variant='dot'>{AdTypesStrings[e.adTypeAdTypeId - 1]}</Badge></td>
-							<Menu trigger='hover'>
+							<td>
+								<Menu trigger='hover'>
 									<Menu.Item icon = {<Pencil1Icon />} onClick = {() => router.push(`/workings/skus/${e.SkuId}`)}>Редактировать</Menu.Item>
-							</Menu>
+								</Menu>
+							</td>
 						</tr>
 					)}
 				</tbody>

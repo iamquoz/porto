@@ -43,8 +43,8 @@ function DraggableMarker({lat, lng, onChange} : {lat: number, lng: number, onCha
 		<Popup minWidth={90} >
 		  <span onClick={toggleDraggable}>
 			{draggable
-			  ? 'Маркер можно переносить'
-			  : 'Нажмите для переноса маркера'}
+			  ? '🔓 Маркер можно переносить'
+			  : '🔒 Нажмите для переноса маркера'}
 		  </span>
 		</Popup>
 	  </Marker>
@@ -53,7 +53,7 @@ function DraggableMarker({lat, lng, onChange} : {lat: number, lng: number, onCha
 
 const Map = ({lat, lng, onChange} : {lat: number, lng: number, onChange: any}) => {
   return (
-    <MapContainer center={center} zoom={13} scrollWheelZoom={false} style={{height: 400, width: "100%"}}>
+    <MapContainer center={center} zoom={13} scrollWheelZoom={false} style={{height: 500, width: "100%"}}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
