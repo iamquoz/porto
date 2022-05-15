@@ -47,7 +47,8 @@ export default function CustomNavbar() {
 					<SidebarButton flavorText = "Новости" link = "/news" color = "cyan" icon = {<ReaderIcon />} />
 					<SidebarButton flavorText = "Поддержка" link = "/support" color = "pink" icon = {<HeartFilledIcon />} />
 					<SidebarButton flavorText = "Заказы" link = "/orders" color = "teal" icon = {<DashboardIcon />} />
-					<SidebarButton flavorText = "Предприятие" link = "/workings" color = "orange" icon = {<MixIcon />} />
+					{[Role.admin, Role.manager].includes(session?.role as Role) 
+						&& <SidebarButton flavorText = "Предприятие" link = "/workings" color = "orange" icon = {<MixIcon />} />}
 				</Group>
 				
 

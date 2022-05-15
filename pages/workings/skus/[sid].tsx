@@ -45,6 +45,7 @@ export default function SkusIndiv() {
 					title: "Успешно!",
 					message: "Товар был успешно сохранен"
 				})
+				router.push('/workings/skus');
 			})
 			.catch(err => {
 				notifications.updateNotification(id, {
@@ -76,7 +77,7 @@ export default function SkusIndiv() {
 				/>
 				<NativeSelect 
 					size = "lg"
-					data = {AdTypesStrings}
+					data = {AdTypesStrings.slice().reverse()}
 					onChange = {e => setAdType(sku.SkuId ?? 0, e.target.value)}
 					placeholder = "Выберите тип рекламы"
 					label = "Тип рекламы"
