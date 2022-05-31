@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSetState, useListState } from '@mantine/hooks';
 import { useRouter } from 'next/router';
-import { Center, Stepper, Button, Group, MultiSelect, NumberInput, Card, Text } from '@mantine/core';
+import { InputWrapper, Stepper, Button, Group, MultiSelect, NumberInput, Card, Text, CheckboxGroup, Checkbox } from '@mantine/core';
 import { Order, Sku } from '@prisma/client'
 import axios from 'axios'
 import { DatePicker } from '@mantine/dates';
@@ -22,17 +22,24 @@ export default function CustomerOrder({id}: {id: string}) {
 	const [skus, skusHandler] = useListState<Sku>([]);
 	const [selectSku, setSelectSku] = useState<string[]>([]);
 	const [order, orderHandler] = useSetState<Partial<Order>>({});
+	const [orderActive, orderActiveHandler] = useListState<boolean>([]);
 	const [amounts, amountsHandler] = useListState<OrderInput<number>>([]);
 	const [dates, datesHandler] = useListState<OrderInput<Date>>([]);
 
 	useEffect(() => {
 		if (id !== '0')
-			console.log(id)
+			axios.get(`/api/orders/${id}`)
+				.then(res => orderHandler(res.data))
+				.catch(err => console.log(err));
 
 		axios.get('/api/skus')
 			.then(res => skusHandler.setState(res.data))
 			.catch(err => console.log(err));
 	}, [id]);
+
+	useEffect(() => {
+		orderActiveHandler.setState(order.active ?? []);
+	}, [order]);
 
 	const save = () => {
 		let order: Partial<Order> = {};
@@ -47,8 +54,16 @@ export default function CustomerOrder({id}: {id: string}) {
 			order.totalPrice += (skus.find(x => x.SkuId === parseInt(selectSku[i]))?.price ?? 0) * amounts[i].payload;
 		}
 
-		// axios.post('/api/orders', order)
+		axios.post(`/api/orders/${id}`, order)
+			.then(res => console.log(res))
+			.catch(err => console.log(err));
 		console.log(order);
+	}
+
+	const saveChanges = () => {
+		axios.patch(`/api/orders/${id}`, orderActive)
+			.then(res => console.log(res))
+			.catch(err => console.log(err));
 	}
 
 	useEffect(() => {
@@ -62,52 +77,65 @@ export default function CustomerOrder({id}: {id: string}) {
 			save();
 	}, [active]);
 
-	return (
-		<Group grow>
-			<div style={{maxWidth: '1000px'}}>
-				<Stepper active={active} onStepClick={setActive} breakpoint="sm" orientation='horizontal'>
-					<Stepper.Step label="Первый шаг" description="Выберите услуги" allowStepSelect={active > 0}>
-						<div>
-							<MultiSelect data = {skus.map(e => ({label: e.name, value: e.SkuId.toString()}))} 
-								clearable
-								searchable
-								nothingFound = 'Ничего не было найдено 😔'
-								value = {selectSku}
-								onChange = {setSelectSku}
-								/>
-						</div>
-					</Stepper.Step>
-					<Stepper.Step label="Второй шаг" description="Установите параметры услуг" allowStepSelect={active > 1}>
-						{selectSku.map(e => <Card shadow="lg" p = 'sm' m = 'sm' withBorder key = {e}>
-							<Text weight={500} size="lg">{skus.find(x => x.SkuId == parseInt(e))?.name}</Text>
-							<Group direction='row' pt='xl'>
-								<NumberInput 
-									label = 'Количество' 
-									min={1}
-									value = {amounts.find(x => x.skuid == parseInt(e))?.payload}
-									onChange = {event => amountsHandler.setItemProp(amounts.findIndex(x => x.skuid == parseInt(e)), 'payload', event!)}
-									required/>
-								<DatePicker 
-									label = 'Дата начала'
-									value = {dates.find(x => x.skuid == parseInt(e))?.payload}
-									onChange = {event => datesHandler.setItemProp(dates.findIndex(x => x.skuid == parseInt(e)), 'payload', event!)}
-									required/>
-							</Group>
-						</Card>)}
-					</Stepper.Step>
-					<Stepper.Step label="Последний шаг" description="Ознакомьтесь и оплатите заказ" allowStepSelect={active > 2}>
-						<OrderMapDynamic skus={skus.filter(e => selectSku.includes(e.SkuId.toString()))}/>
-					</Stepper.Step>
-					<Stepper.Completed>
-						Поздравляем с покупкой!
-					</Stepper.Completed>
-				</Stepper>
+	if (id === '0')
+		return (
+			<Group grow>
+				<div style={{maxWidth: '1000px'}}>
+					<Stepper active={active} onStepClick={setActive} breakpoint="sm" orientation='horizontal'>
+						<Stepper.Step label="Первый шаг" description="Выберите услуги" allowStepSelect={active > 0}>
+							<div>
+								<MultiSelect data = {skus.map(e => ({label: e.name, value: e.SkuId.toString()}))} 
+									clearable
+									searchable
+									nothingFound = 'Ничего не было найдено 😔'
+									value = {selectSku}
+									onChange = {setSelectSku}
+									/>
+							</div>
+						</Stepper.Step>
+						<Stepper.Step label="Второй шаг" description="Установите параметры услуг" allowStepSelect={active > 1}>
+							{selectSku.map(e => <Card shadow="lg" p = 'sm' m = 'sm' withBorder key = {e}>
+								<Text weight={500} size="lg">{skus.find(x => x.SkuId == parseInt(e))?.name}</Text>
+								<Group direction='row' pt='xl'>
+									<NumberInput 
+										label = 'Количество' 
+										min={1}
+										value = {amounts.find(x => x.skuid == parseInt(e))?.payload}
+										onChange = {event => amountsHandler.setItemProp(amounts.findIndex(x => x.skuid == parseInt(e)), 'payload', event!)}
+										required/>
+									<DatePicker 
+										label = 'Дата начала'
+										value = {dates.find(x => x.skuid == parseInt(e))?.payload}
+										onChange = {event => datesHandler.setItemProp(dates.findIndex(x => x.skuid == parseInt(e)), 'payload', event!)}
+										required/>
+								</Group>
+							</Card>)}
+						</Stepper.Step>
+						<Stepper.Step label="Последний шаг" description="Ознакомьтесь и оплатите заказ" allowStepSelect={active > 2}>
+							<OrderMapDynamic skus={skus.filter(e => selectSku.includes(e.SkuId.toString()))}/>
+						</Stepper.Step>
+						<Stepper.Completed>
+							Поздравляем с покупкой!
+						</Stepper.Completed>
+					</Stepper>
 
-				<Group position="center" mt="xl">
-					<Button variant="default" onClick={prevStep} disabled = {active === 3}>Назад</Button>
-					<Button onClick={active !== 3 ? () => nextStep() : () => router.push('/orders')} disabled = {selectSku.length === 0 || (active == 1 && amounts.some(x => x.payload === 0))}>Дальше</Button>
-				</Group>
-			</div>
-		</Group>
-	)
+					<Group position="center" mt="xl">
+						<Button variant="default" onClick={prevStep} disabled = {active === 3}>Назад</Button>
+						<Button onClick={active !== 3 ? () => nextStep() : () => router.push('/orders')} disabled = {selectSku.length === 0 || (active == 1 && amounts.some(x => x.payload === 0))}>Дальше</Button>
+					</Group>
+				</div>
+			</Group>
+		)
+	else 
+		return (
+			<Group direction='column'>
+				<InputWrapper label = 'Активируйте или деактивируйте один из предметов заказа' size='xl'>
+					{orderActive.map((x, i) => 
+						<Checkbox value={i.toString()} key = {i} label = {skus.find(x => x.SkuId == order.SkuIds![i])?.name}
+						 size = 'lg' mt = 'md' checked = {x} onChange = {(e) => orderActiveHandler.setItem(i, e.target.checked)} />
+					)}
+				</InputWrapper>
+				<Button size='lg' onClick={() => saveChanges()}>Сохранить изменения</Button>
+			</Group>
+		)
 }

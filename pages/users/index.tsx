@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import Roles, { RolesStrings } from "../../lib/roles"
 import { TrashIcon, EyeOpenIcon, EyeClosedIcon, Pencil1Icon } from "@radix-ui/react-icons"
 import { Router, useRouter } from 'next/router';
+import Role from '../../lib/roles';
 
 type UserWithProvider = Prisma.UserGetPayload<{include: {accounts: true}}>
 
@@ -23,7 +24,11 @@ export default function Users() {
 	}, []);
 
 	const onChangeRole = (uid: string, role: string) => {
-		console.log(uid, role, RolesStrings.findIndex(e => e == role) + 1);
+		let chosenRole: Role = RolesStrings.findIndex(e => e == role) + 1;
+		console.log(uid, role, chosenRole);
+
+		if (chosenRole == Roles.admin && !confirm('Вы уверены, что хотите изменить роль этого пользователя на Администратор?'))
+			return;
 	}
 
 	return (

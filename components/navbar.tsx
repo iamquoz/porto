@@ -44,9 +44,12 @@ export default function CustomNavbar() {
 				<Group direction = "column" spacing = "xl">
 					{[Role.admin, Role.manager].includes(session?.role as Role) 
 						&& <SidebarButton flavorText = "Аккаунты" link = "/users" color = "blue" icon = {<PersonIcon />}/>}
-					<SidebarButton flavorText = "Новости" link = "/news" color = "cyan" icon = {<ReaderIcon />} />
-					<SidebarButton flavorText = "Поддержка" link = "/support" color = "pink" icon = {<HeartFilledIcon />} />
-					<SidebarButton flavorText = "Заказы" link = "/orders" color = "teal" icon = {<DashboardIcon />} />
+					{[Role.admin, Role.manager, Role.writer].includes(session?.role as Role) 
+						&& <SidebarButton flavorText = "Новости" link = "/news" color = "cyan" icon = {<ReaderIcon />} />}
+					{[Role.admin, Role.manager, Role.support, Role.customer].includes(session?.role as Role) 	
+						&& <SidebarButton flavorText = "Поддержка" link = "/support" color = "pink" icon = {<HeartFilledIcon />} /> }
+					{[Role.admin, Role.manager, Role.seller, Role.customer].includes(session?.role as Role) 
+						&& <SidebarButton flavorText = "Заказы" link = "/orders" color = "teal" icon = {<DashboardIcon />} /> }
 					{[Role.admin, Role.manager].includes(session?.role as Role) 
 						&& <SidebarButton flavorText = "Предприятие" link = "/workings" color = "orange" icon = {<MixIcon />} />}
 				</Group>
